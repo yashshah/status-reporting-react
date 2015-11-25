@@ -7,6 +7,58 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 <body>
+	<div id="container">
+	</div>
+	<script type="text/jsx">
+
+		var Input = React.createClass({
+		  render: function () {
+		    return <input type = "text" onKeyPress = {this._handleKeyPress} />;
+		  },
+		  _handleKeyPress: function(e) {
+		    if (e.key === 'Enter') {
+		      console.log('Enter pressed!');
+		      this.props.onSubmit();
+		    }
+		  }
+		});
+		
+		var StreamBrowser = React.createClass({
+
+			// Set the initial props
+			getDefaultProps: function() {
+				return {
+					app_name: 'workingon',
+					username: 'iiyvFcb3A',
+					password: 'b3a36a4d-e517-451c-a04f-a11dc2c4b4bc',
+					type: 'feed'
+				};
+			},
+
+			// Set the initial component state
+			getInitialState: function(){
+				return {
+
+				};
+			},
+		
+			addStatus: function(post){
+				console.log("Status Added!");
+		  	},
+
+			render: function() {
+				return (
+					<Input onSubmit={this.addStatus}/>
+				);
+			}
+		
+		});
+		
+		React.render(
+		  <StreamBrowser />,
+		  document.getElementById('container')
+		);
+	</script>
 
 </body>
 </html>
