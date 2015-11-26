@@ -13,11 +13,14 @@
 	<script type="text/jsx">
 
 		var Input = React.createClass({
+		  componentDidMount: function() {
+			this.refs.statusInput.getDOMNode().focus(); 
+	   	  },
 		  render: function () {
 		    return (
 		    	<div className="statusInput">
 		    		<h1>What are you doing?</h1>
-		    		<input type = "text" onKeyPress = {this._handleKeyPress} placeholder="Going for skiing"/>
+		    		<input type = "text" onKeyPress = {this._handleKeyPress} placeholder="Going for skiing" ref="statusInput" />
 		    	</div>
 		    )
 
