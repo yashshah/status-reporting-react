@@ -20,7 +20,7 @@
 		    return (
 		    	<div className="statusInput">
 		    		<h1>What are you doing?</h1>
-		    		<input type = "text" onKeyPress = {this._handleKeyPress} placeholder="Going for skiing" ref="statusInput" />
+		    		<input type = "text" onKeyPress = {this._handleKeyPress} placeholder={this.props.placeholder} ref="statusInput" />
 		    	</div>
 		    )
 
@@ -28,7 +28,7 @@
 		  _handleKeyPress: function(e) {
 		    if (e.key === 'Enter') {
 		      console.log('Enter pressed!');
-		      this.props.onSubmit();
+		      this.props.onSubmit(this.refs.statusInput.getDOMNode().value);
 		    }
 		  }
 		});
@@ -47,9 +47,20 @@
 
 			// Set the initial component state
 			getInitialState: function(){
+				console.log(localStorage.state);
+				if (localStorage.state){
+					status = localStorage.state
+				}
+				else
+				{
+					status = "Skiing in Chicago"
+				}
 				return {
-
+					status: status
 				};
+			},
+			componentDidUpdate: function(prevProps, prevState) {
+			    localStorage.state = JSON.stringify(this.state);
 			},
 			addStatus: function(status){
 				console.log("Status Added!");
@@ -84,7 +95,7 @@
 
 			render: function() {
 				return (
-					<Input onSubmit={this.addStatus}/>
+					<Input onSubmit={this.addStatus} placeholder={this.state.status}/>
 				);
 			}
 		
