@@ -1,0 +1,38 @@
+body{
+	background: #2ecc71;
+	padding: 30px;
+}
+
+input[type="text"]:focus {
+  outline: none;
+}
+.statusInput input[type="text"] {
+  	font-size: 24px;
+    background: transparent;
+    border: none;
+    width: 100%
+}
+.statusInput input[type="text"]:focus,
+.statusInput input[type="text"].focus {
+  border-bottom: solid 2px ##ecf0f1;
+}
+::-webkit-input-placeholder {
+    color: #ecf0f1  ;
+    opacity: 0.6;
+}
+:-moz-placeholder {
+    color: #ecf0f1  ;
+    opacity: 0.6;
+}
+::-moz-placeholder {
+    color: #ecf0f1  ;
+    opacity: 0.6;
+}
+:-ms-input-placeholder {
+    color: #ecf0f1  ;
+    opacity: 0.6;
+}
+
+.statusInput h1{
+	color: white;
+}
