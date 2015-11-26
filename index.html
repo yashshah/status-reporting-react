@@ -29,6 +29,7 @@
 		    if (e.key === 'Enter') {
 		      console.log('Enter pressed!');
 		      this.props.onSubmit(this.refs.statusInput.getDOMNode().value);
+		      this.refs.statusInput.getDOMNode().value = "";
 		    }
 		  }
 		});
