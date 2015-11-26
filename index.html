@@ -51,9 +51,35 @@
 
 				};
 			},
-		
-			addStatus: function(post){
+			addStatus: function(status){
 				console.log("Status Added!");
+				this.setState({
+					status:status 
+				});
+				var data = {
+					"status": status
+				}
+  		  		$.ajax({
+					type: "POST",
+					xhrFields: {
+					  withCredentials: true
+					},
+					headers: {
+					  "Authorization": "Basic " + btoa(this.props.username+':'+this.props.password)
+					},
+					data: JSON.stringify(data),
+					url: 'http://scalr.api.appbase.io/'+this.props.app_name+ '/' + this.props.type+'/',
+					dataType: 'json',
+					contentType: "application/json",
+
+					success: function(data) {
+						console.log(data);
+					}.bind(this),
+					error: function(xhr, status, err) {
+						console.error(status, err.toString());
+						console.log(data)
+					}.bind(this)
+				});
 		  	},
 
 			render: function() {
