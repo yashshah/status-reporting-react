@@ -41,6 +41,99 @@
       </div>
 	</div>
 	<script type="text/jsx">
+		var FeedItem = React.createClass({
+			render: function() {
+				return (
+					<div className="col s12 m6 l4">
+			          <div className="card-panel white">
+			            <div className="card-content gray-text">
+			              <span className="card-title">{this.props.status}</span>
+			            </div>
+			          </div>
+			        </div>
+				);
+			}
+		})
+
+		var FeedItems = React.createClass({
+			render: function() {
+
+				var content;
+				if (this.props.statusList.length > 0) {
+				  content = this.props.statusList.map(function(status) {
+				    return <FeedItem status={status} />;
+				  });
+				} else {
+				  content = <FeedItem status="No content Available!" />;
+				}
+
+				return (
+					<div className="row">
+						{content}
+					</div>
+				);
+			}
+		})
+		
+		var Feed = React.createClass({
+
+			getInitialState: function() {
+				var self = this;
+				var appbaseRef = new Appbase({
+				  url: 'https://scalr.api.appbase.io',
+				  appname: 'workingon',
+				  username: 'iiyvFcb3A',
+				  password: 'b3a36a4d-e517-451c-a04f-a11dc2c4b4bc'
+				})
+
+				appbaseRef.search({
+					type: "feed",
+					body: {
+					    query: {
+					      match_all: {}
+					    }
+					  }
+					}).on('data', function(res) {
+					  $.map(res.hits.hits, function(object){
+						self.addStatus(object._source.status)
+					  })
+					}).on('error', function(err) {
+					  console.log("search error: ", err);
+				})
+
+				appbaseRef.searchStream({
+				  type: "feed",
+				  body: {
+				    query: {
+				      match_all: {}
+				    }
+				  }
+				}).on('data', function(res) {
+				  self.addStatus(res._source.status)
+				}).on('error', function(err) {
+				  console.log("streaming error: ", err);
+				})	
+				return {
+					statusList: [] 
+				};
+			},
+			addStatus: function(newStatusItem){
+				var updated = this.state.statusList;
+	    		updated.unshift(newStatusItem)
+	    		this.setState({statusList: updated});
+			},
+			render: function() {
+				return (
+					<FeedItems statusList={this.state.statusList}/>
+				);
+			}
+		
+		});
+
+		React.render(
+		  <Feed />,
+		  document.getElementById('container')
+		);
 	</script>
 
 </body>
