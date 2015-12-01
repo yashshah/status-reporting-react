@@ -12,11 +12,12 @@
 	</div>
 	<script type="text/jsx">
 
-		var Input = React.createClass({
+		var StatusInput = React.createClass({
 		  componentDidMount: function() {
 			this.refs.statusInput.getDOMNode().focus(); 
 	   	  },
 		  render: function () {
+
 		    return (
 		    	<div className="statusInput">
 		    		<h1>What are you doing?</h1>
@@ -33,6 +34,28 @@
 		    }
 		  }
 		});
+
+		var TwitterInput = React.createClass({
+		  componentDidMount: function() {
+			this.refs.nameInput.getDOMNode().focus(); 
+	   	  },
+		  render: function () {
+
+		    return (
+		    	<div className="statusInput">
+		    		<h1>What is your Twitter handle?</h1>
+		    		<input type = "text" onKeyPress = {this._handleKeyPress} placeholder="@YourTwitterHandle" ref="nameInput" />
+		    	</div>
+		    )
+
+		  },
+		  _handleKeyPress: function(e) {
+		    if (e.key === 'Enter') {
+		      this.props.onSubmit(this.refs.nameInput.getDOMNode().value);
+		    }
+		  }
+		});
+
 		
 		var StreamBrowser = React.createClass({
 
@@ -51,17 +74,22 @@
 				console.log(localStorage.state);
 				if (localStorage.state){
 					status = JSON.parse(localStorage.state).status
+					twitterHandle = JSON.parse(localStorage.state).twitterHandle
+
 				}
 				else
 				{
-					status = "Skiing in Chicago"
+					status = "Mining Bitcoin"
+					twitterHandle = ""
 				}
 				return {
-					status: status
+					status: status,
+					twitterHandle: twitterHandle
 				};
 			},
 			componentDidUpdate: function(prevProps, prevState) {
 			    localStorage.state = JSON.stringify(this.state);
+			    console.log("Ab gaya idhar")
 			},
 			addStatus: function(status){
 				console.log("Status Added!");
@@ -69,8 +97,10 @@
 					status:status 
 				});
 				var data = {
-					"status": status
+					"status": status,
+					"twitterHandle": this.state.twitterHandle
 				}
+				console.log(data)
   		  		$.ajax({
 					type: "POST",
 					xhrFields: {
@@ -94,10 +124,29 @@
 				});
 		  	},
 
+		  	addTwitterHandle: function(twitterHandle){
+		  		this.setState({
+					twitterHandle: twitterHandle 
+				});
+				console.log("Twitter handle aded")
+		  	},
+
 			render: function() {
-				return (
-					<Input onSubmit={this.addStatus} placeholder={this.state.status}/>
-				);
+				var twitterHandle = ""
+				if(localStorage.state)
+					twitterHandle = JSON.parse(localStorage.state).twitterHandle
+				if(twitterHandle || this.state.twitterHandle){
+					console.log(this.TwitterHandle)
+					return (
+						<StatusInput onSubmit={this.addStatus} placeholder={this.state.status}/>
+					);					
+				}
+				else{
+					console.log(localStorage)
+					return (
+						<TwitterInput onSubmit={this.addTwitterHandle} />
+					);
+				}
 			}
 		
 		});
