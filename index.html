@@ -61,6 +61,12 @@
 		  },
 		  _handleKeyPress: function(e) {
 		    if (e.key === 'Enter') {
+		      // Being Classy
+		      if(this.refs.nameInput.getDOMNode().value == "@yashshah"){
+		      	alert('Dare you, Motherfucker!')
+		      	this.refs.nameInput.getDOMNode().value = ""
+		      	return ;
+		      }
 		      this.props.onSubmit(this.refs.nameInput.getDOMNode().value);
 		    }
 		  }
