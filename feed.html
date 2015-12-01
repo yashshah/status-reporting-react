@@ -19,15 +19,16 @@
 	<script type="text/jsx">
 		var FeedItem = React.createClass({
 			render: function() {
+				twitterProfilePictureURL = "https://twitter.com/" + this.props.item.twitterHandle + "/profile_image?size=original"
 				return (
 					<div className="col s12 m6 l4">
 			          <div className="card white">
 			              <div className="card-image">
-			              	<img src="https://twitter.com/@yashshah/profile_image?size=original"/>
+			              	<img src={twitterProfilePictureURL}/>
 			              </div>
 			              <div className="card-content gray-text">
-			              	<span className="card-title text-darken-4">@yashshah is Working on</span>
-			              	<p>{this.props.status}</p>
+			              	<span className="card-title text-darken-4">{this.props.item.twitterHandle} is Working on</span>
+			              	<p>{this.props.item.status}</p>
 			              </div>
 			          </div>
 			        </div>
@@ -39,12 +40,12 @@
 			render: function() {
 
 				var content;
-				if (this.props.statusList.length > 0) {
-				  content = this.props.statusList.map(function(status) {
-				    return <FeedItem status={status} />;
+				if (this.props.items.length > 0) {
+				  content = this.props.items.map(function(item) {
+				    return <FeedItem item={item} />;
 				  });
 				} else {
-				  content = <FeedItem status="No content Available!" />;
+				  content = <FeedItem item="No content Available!" />;
 				}
 
 				return (
@@ -69,6 +70,7 @@
 
 				appbaseRef.search({
 					type: "feed",
+				  	size: 1000,
 					body: {
 					    query: {
 					      match_all: {}
@@ -76,7 +78,7 @@
 					  }
 					}).on('data', function(res) {
 					  $.map(res.hits.hits, function(object){
-						self.addStatus(object._source.status)
+						self.addItem(object._source)
 					  })
 					}).on('error', function(err) {
 					  console.log("search error: ", err);
@@ -90,22 +92,23 @@
 				    }
 				  }
 				}).on('data', function(res) {
-				  self.addStatus(res._source.status)
+				  self.addItem(res._source)
 				}).on('error', function(err) {
 				  console.log("streaming error: ", err);
 				})	
 				return {
-					statusList: [] 
+					items: [] 
 				};
 			},
-			addStatus: function(newStatusItem){
-				var updated = this.state.statusList;
-	    		updated.unshift(newStatusItem)
-	    		this.setState({statusList: updated});
+			addItem: function(newItem){
+				var updated = this.state.items;
+	    		updated.unshift(newItem)
+	    		this.setState({items: updated});
+	    		console.log(this.state.items)
 			},
 			render: function() {
 				return (
-					<FeedItems statusList={this.state.statusList}/>
+					<FeedItems items={this.state.items}/>
 				);
 			}
 		
