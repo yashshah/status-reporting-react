@@ -42,3 +42,7 @@ input[type="text"]:focus {
 .statusInput h2{
 	color: white;
 }
+.card-image{
+    height: 400px;
+    overflow: hidden !important;
+}
