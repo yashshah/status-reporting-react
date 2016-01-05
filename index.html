@@ -20,62 +20,56 @@
 		<div id = "statusInput" class="col s12 m12 l12"> </div>
 		<div id = "feed" class="col s12 m6 l6"> </div>	
 	</div>
+
+	<!-- React code starts-->
 	<script type="text/jsx">
 
-		var StatusInput = React.createClass({
-		  componentDidMount: function() {
-			this.refs.statusInput.getDOMNode().focus(); 
-	   	  },
-		  render: function () {
-
-		    return (
-		    	<div className="statusInput">
-		    		<h2>What are you doing?</h2>
-		    		<input type = "text" onKeyPress = {this._handleKeyPress} placeholder={this.props.placeholder} ref="statusInput" />
-		    	</div>
-		    )
-
-		  },
-		  _handleKeyPress: function(e) {
-		    if (e.key === 'Enter') {
-		      console.log('Enter pressed!');
-		      this.props.onSubmit(this.refs.statusInput.getDOMNode().value);
-		      this.refs.statusInput.getDOMNode().value = "";
-		    }
-		  }
-		});
-
+		// Component for input of Twitter handle
 		var TwitterInput = React.createClass({
-		  componentDidMount: function() {
-			this.refs.nameInput.getDOMNode().focus(); 
-	   	  },
-		  render: function () {
-
-		    return (
-		    	<div className="statusInput">
-		    		<h2>What is your Twitter username?</h2>
-		    		<input type = "text" onKeyPress = {this._handleKeyPress} placeholder="@YourTwitterUsername" ref="nameInput" />
-		    	</div>
-		    )
-
-		  },
-		  _handleKeyPress: function(e) {
-		    if (e.key === 'Enter') {
-		      // Being Classy
-		      if(this.refs.nameInput.getDOMNode().value == "@yashshah"){
-		      	alert('Dare you, Motherfucker!')
-		      	this.refs.nameInput.getDOMNode().value = ""
-		      	return ;
-		      }
-		      this.props.onSubmit(this.refs.nameInput.getDOMNode().value);
-		    }
-		  }
+			componentDidMount: function() {
+				this.refs.nameInput.getDOMNode().focus(); 
+			},
+			_handleKeyPress: function(e) {
+				if (e.key === 'Enter') {
+					this.props.onSubmit(this.refs.nameInput.getDOMNode().value);
+				}
+			},
+			render: function () {
+				return (
+					<div className="statusInput">
+						<h2>What is your Twitter username?</h2>
+						<input type = "text" onKeyPress = {this._handleKeyPress} placeholder="@YourTwitterUsername" ref="nameInput" />
+					</div>
+				)
+			}
 		});
+
+		// Component for input of Status
+		var StatusInput = React.createClass({
+			componentDidMount: function() {
+				this.refs.statusInput.getDOMNode().focus(); 
+			},
+			_handleKeyPress: function(e) {
+				if (e.key === 'Enter') {
+					this.props.onSubmit(this.refs.statusInput.getDOMNode().value);
+					this.refs.statusInput.getDOMNode().value = "";
+				}
+			},
+			render: function () {
+				return (
+					<div className="statusInput">
+						<h2>What are you doing?</h2>
+						<input type = "text" onKeyPress = {this._handleKeyPress} placeholder={this.props.placeholder} ref="statusInput" />
+					</div>
+				)
+			}
+		});
+
 
 		
 		var StreamBrowser = React.createClass({
 
-			// Set the initial props
+			// Set your Appbase credentials here
 			getDefaultProps: function() {
 				return {
 					app_name: 'workingon',
@@ -85,14 +79,13 @@
 				};
 			},
 
-			// Set the initial component state
+			// Checks if localstorage already exists otherwise update it with default value
 			getInitialState: function(){
-				console.log(localStorage.state);
 				if (localStorage.state){
 					status = JSON.parse(localStorage.state).status
 					twitterHandle = JSON.parse(localStorage.state).twitterHandle
-
 				}
+				// Setting the status with default Value
 				else
 				{
 					status = "Mining Bitcoin"
@@ -103,12 +96,15 @@
 					twitterHandle: twitterHandle
 				};
 			},
+
+			// Update the localStorage when state is changed
 			componentDidUpdate: function(prevProps, prevState) {
-			    localStorage.state = JSON.stringify(this.state);
-			    console.log("Ab gaya idhar")
+				localStorage.state = JSON.stringify(this.state);
 			},
+
+			// Index the status to Appbase
 			addStatus: function(status){
-				console.log("Status Added!");
+				// Set the status state with the argument passed with the function
 				this.setState({
 					status:status 
 				});
@@ -116,20 +112,19 @@
 					"status": status,
 					"twitterHandle": this.state.twitterHandle
 				}
-				console.log(data)
-  		  		$.ajax({
+				// Ajax call to insert the status in Appbase
+				$.ajax({
 					type: "POST",
 					xhrFields: {
-					  withCredentials: true
+						withCredentials: true
 					},
 					headers: {
-					  "Authorization": "Basic " + btoa(this.props.username+':'+this.props.password)
+						"Authorization": "Basic " + btoa(this.props.username+':'+this.props.password)
 					},
 					data: JSON.stringify(data),
 					url: 'http://scalr.api.appbase.io/'+this.props.app_name+ '/' + this.props.type+'/',
 					dataType: 'json',
 					contentType: "application/json",
-
 					success: function(data) {
 						console.log(data);
 					}.bind(this),
@@ -138,34 +133,35 @@
 						console.log(data)
 					}.bind(this)
 				});
-		  	},
+			},
 
+		  	// Update the Twitter Handle state when the TwitterInput component is submitted
 		  	addTwitterHandle: function(twitterHandle){
 		  		this.setState({
-					twitterHandle: twitterHandle 
-				});
-				console.log("Twitter handle aded")
+		  			twitterHandle: twitterHandle 
+		  		});
 		  	},
 
-			render: function() {
-				var twitterHandle = ""
-				if(localStorage.state)
-					twitterHandle = JSON.parse(localStorage.state).twitterHandle
-				if(twitterHandle || this.state.twitterHandle){
-					console.log(this.TwitterHandle)
-					return (
-						<StatusInput onSubmit={this.addStatus} placeholder={this.state.status}/>
-					);					
-				}
-				else{
-					console.log(localStorage)
-					return (
-						<TwitterInput onSubmit={this.addTwitterHandle} />
-					);
-				}
-			}
-		
-		});
+		  	render: function() {
+		  		var twitterHandle = ""
+		  		
+		  		// If twitterHandle already exists, then directly show update status page
+		  		if(localStorage.state)
+		  			twitterHandle = JSON.parse(localStorage.state).twitterHandle
+		  		
+		  		if(twitterHandle || this.state.twitterHandle){
+		  			return (
+		  				<StatusInput onSubmit={this.addStatus} placeholder={this.state.status}/>
+		  			);					
+		  		}
+		  		else{
+		  			return (
+		  				<TwitterInput onSubmit={this.addTwitterHandle} />
+		  			);
+		  		}
+		  	}
+
+		  });
 		
 		React.render(
 		  <StreamBrowser />,
