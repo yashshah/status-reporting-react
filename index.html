@@ -146,10 +146,7 @@
 		  		var twitterHandle = ""
 		  		
 		  		// If twitterHandle already exists, then directly show update status page
-		  		if(localStorage.state)
-		  			twitterHandle = JSON.parse(localStorage.state).twitterHandle
-		  		
-		  		if(twitterHandle || this.state.twitterHandle){
+		  		if(this.state.twitterHandle){
 		  			return (
 		  				<StatusInput onSubmit={this.addStatus} placeholder={this.state.status}/>
 		  			);					
