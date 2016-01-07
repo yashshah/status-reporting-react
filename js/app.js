@@ -41,7 +41,7 @@ var StatusInput = React.createClass({
 
 
 
-var StreamBrowser = React.createClass({
+var WorkingOn = React.createClass({
 
 	// Set your Appbase credentials here
 	getDefaultProps: function() {
@@ -135,6 +135,6 @@ var StreamBrowser = React.createClass({
   });
 
 React.render(
-  <StreamBrowser />,
+  <WorkingOn />,
   document.getElementById('statusInput')
 );
