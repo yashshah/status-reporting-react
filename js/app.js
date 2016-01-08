@@ -1,9 +1,11 @@
 // Component for input of Twitter handle
 var TwitterInput = React.createClass({
 	componentDidMount: function() {
+		// Focus on the input button when the page loads
 		this.refs.nameInput.getDOMNode().focus(); 
 	},
 	_handleKeyPress: function(e) {
+		// Call the onSubmit event when enter is pressed
 		if (e.key === 'Enter') {
 			this.props.onSubmit(this.refs.nameInput.getDOMNode().value);
 		}
@@ -20,10 +22,12 @@ var TwitterInput = React.createClass({
 
 // Component for input of Status
 var StatusInput = React.createClass({
+	// Focus on the input button when the page loads
 	componentDidMount: function() {
 		this.refs.statusInput.getDOMNode().focus(); 
 	},
 	_handleKeyPress: function(e) {
+		// Call the onSubmit event when enter is pressed
 		if (e.key === 'Enter') {
 			this.props.onSubmit(this.refs.statusInput.getDOMNode().value);
 			this.refs.statusInput.getDOMNode().value = "";
