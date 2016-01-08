@@ -43,22 +43,19 @@ var StatusInput = React.createClass({
 	}
 });
 
-
-
 var WorkingOn = React.createClass({
-
-	// Set your Appbase credentials here
-	getDefaultProps: function() {
-		return {
-			app_name: 'workingon',
-			username: 'iiyvFcb3A',
-			password: 'b3a36a4d-e517-451c-a04f-a11dc2c4b4bc',
-			type: 'feed'
-		};
-	},
 
 	// Checks if localstorage already exists otherwise update it with default value
 	getInitialState: function(){
+		var self = this
+		$.getJSON("./config.json", function(json) {
+			console.log(json.appbase.app_name)
+			self.props.app_name = json.appbase.app_name
+			self.props.username = json.appbase.username
+			self.props.password = json.appbase.password
+			self.props.type = json.appbase.type
+		});
+
 		if (localStorage.state){
 			status = JSON.parse(localStorage.state).status
 			twitterHandle = JSON.parse(localStorage.state).twitterHandle
