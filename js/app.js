@@ -48,14 +48,22 @@ var WorkingOn = React.createClass({
 	// Checks if localstorage already exists otherwise update it with default value
 	getInitialState: function(){
 		var self = this
+		// Get the Appbase credentials from the config file
 		$.getJSON("./config.json", function(json) {
 			console.log(json.appbase.app_name)
-			self.props.app_name = json.appbase.app_name
-			self.props.username = json.appbase.username
-			self.props.password = json.appbase.password
+			self.props.appbaseRef = new Appbase({
+				  url: 'https://scalr.api.appbase.io',
+				  appname: json.appbase.app_name,
+				  username: json.appbase.username,
+				  password: json.appbase.password
+			});
 			self.props.type = json.appbase.type
 		});
 
+
+
+		// If there is twitter handle in localstorage, get it and use that as default
+		// Also, get the status from the localstorage to show as the placeholder
 		if (localStorage.state){
 			status = JSON.parse(localStorage.state).status
 			twitterHandle = JSON.parse(localStorage.state).twitterHandle
@@ -87,26 +95,13 @@ var WorkingOn = React.createClass({
 			"status": status,
 			"twitterHandle": this.state.twitterHandle
 		}
-		// Ajax call to insert the status in Appbase
-		$.ajax({
-			type: "POST",
-			xhrFields: {
-				withCredentials: true
-			},
-			headers: {
-				"Authorization": "Basic " + btoa(this.props.username+':'+this.props.password)
-			},
-			data: JSON.stringify(data),
-			url: 'http://scalr.api.appbase.io/'+this.props.app_name+ '/' + this.props.type+'/',
-			dataType: 'json',
-			contentType: "application/json",
-			success: function(data) {
-				console.log(data);
-			}.bind(this),
-			error: function(xhr, status, err) {
-				console.error(status, err.toString());
-				console.log(data)
-			}.bind(this)
+		this.props.appbaseRef.index({
+		    type: this.props.type,
+		    body: data,
+		}).on('data', function(response) {
+		    console.log(response);
+		}).on('error', function(error) {
+		    console.log(error);
 		});
 	},
 
@@ -120,7 +115,7 @@ var WorkingOn = React.createClass({
   	render: function() {
   		var twitterHandle = ""
   		
-  		// If twitterHandle already exists, then directly show update status page
+  		// If twitterHandle is already set in localStorage, then show update status page directly
   		if(this.state.twitterHandle){
   			return (
   				<StatusInput onSubmit={this.addStatus} placeholder={this.state.status}/>
