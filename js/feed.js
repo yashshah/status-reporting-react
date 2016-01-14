@@ -95,5 +95,5 @@ var Feed = React.createClass({
 
 React.render(
   <Feed />,
-  document.getElementById('container')
+  document.getElementById('feed')
 );
