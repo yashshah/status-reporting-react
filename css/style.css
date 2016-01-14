@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 body{
-	background: #2ecc71;
+	background: #001365;
 	padding: 36px;
 	font-family: 'Open Sans', sans-serif;
 }
@@ -45,4 +45,19 @@ input[type="text"]:focus {
 .card-image{
     height: 400px;
     overflow: hidden !important;
+}
+
+.profile-picture{
+    width: 100px;
+    max-height: 100px;
+}
+.twitter-handle{
+    opacity: 0.5;
+    font-size: 1.5em;
+    color: white;
+}
+.working-on{
+    font-size: 2em;
+    margin-top: 0px;
+    color: white;
 }

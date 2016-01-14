@@ -2,16 +2,14 @@ var FeedItem = React.createClass({
 	render: function() {
 		twitterProfilePictureURL = "https://twitter.com/" + this.props.item.twitterHandle + "/profile_image?size=original"
 		return (
-			<div className="col s12 m6 l4">
-	          <div className="card white">
-	              <div className="card-image">
-	              	<img src={twitterProfilePictureURL}/>
-	              </div>
-	              <div className="card-content gray-text">
-	              	<span className="card-title text-darken-4">{this.props.item.twitterHandle} is</span>
-	              	<p>{this.props.item.status}</p>
-	              </div>
-	          </div>
+			<div className="row">
+				<div className="col s4 m2 l1">
+		        	<img className="profile-picture" src={twitterProfilePictureURL}/>
+		        </div>
+				<div className="col s8 m10 l11">
+		          	<span className="twitter-handle">{this.props.item.twitterHandle} is</span>
+		          	<p className="working-on">{this.props.item.status}</p>
+		        </div>
 	        </div>
 		);
 	}
