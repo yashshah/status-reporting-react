@@ -62,7 +62,7 @@ var Feed = React.createClass({
 		    }
 		  }
 		}).on('data', function(res) {
-		  self.addItem(res._source)
+		  self.addItemToTop(res._source)
 		}).on('error', function(err) {
 		  console.log("streaming error: ", err);
 		})	
