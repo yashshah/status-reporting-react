@@ -49,10 +49,13 @@ var Feed = React.createClass({
 
 		appbaseRef.search({
 			type: "feed",
-		  	size: 1000,
+		  	size: 10,
 			body: {
 			    query: {
 			      match_all: {}
+			    },
+			    sort: {
+			    	timestamp: "asc"
 			    }
 			  }
 			}).on('data', function(res) {
