@@ -93,7 +93,8 @@ var WorkingOn = React.createClass({
 		});
 		var data = {
 			"status": status,
-			"twitterHandle": this.state.twitterHandle
+			"twitterHandle": this.state.twitterHandle,
+			"timestamp": Date.now()
 		}
 		this.props.appbaseRef.index({
 		    type: this.props.type,
