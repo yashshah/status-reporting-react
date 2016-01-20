@@ -1,3 +1,10 @@
+var appbaseRef = new Appbase({
+  url: 'https://scalr.api.appbase.io',
+  appname: 'workingon',
+  username: 'iiyvFcb3A',
+  password: 'b3a36a4d-e517-451c-a04f-a11dc2c4b4bc'
+})
+
 var FeedItem = React.createClass({
 	render: function() {
 		twitterProfilePictureURL = "https://twitter.com/" + this.props.item.twitterHandle + "/profile_image?size=original"
@@ -38,33 +45,14 @@ var FeedItems = React.createClass({
 
 var Feed = React.createClass({
 
+	getDefaultProps: function() {
+		return {
+			pageNumber: 0
+		};
+	},
+
 	getInitialState: function() {
 		var self = this;
-		var appbaseRef = new Appbase({
-		  url: 'https://scalr.api.appbase.io',
-		  appname: 'workingon',
-		  username: 'iiyvFcb3A',
-		  password: 'b3a36a4d-e517-451c-a04f-a11dc2c4b4bc'
-		})
-
-		appbaseRef.search({
-			type: "feed",
-		  	size: 10,
-			body: {
-			    query: {
-			      match_all: {}
-			    },
-			    sort: {
-			    	timestamp: "asc"
-			    }
-			  }
-			}).on('data', function(res) {
-			  $.map(res.hits.hits, function(object){
-				self.addItem(object._source)
-			  })
-			}).on('error', function(err) {
-			  console.log("search error: ", err);
-		})
 
 		appbaseRef.searchStream({
 		  type: "feed",
@@ -82,11 +70,54 @@ var Feed = React.createClass({
 			items: [] 
 		};
 	},
-	addItem: function(newItem){
+	componentDidMount: function() {
+		window.addEventListener('scroll', this.handleScroll)
+		this.getItems()
+	},
+	componentWillUnmount: function() {
+		window.removeEventListener('scroll', this.handleScroll)
+	},
+	handleScroll: function(event) {
+		console.log("inside")
+		var body = event.srcElement.body
+		var self = this
+		if(body.clientHeight + body.scrollTop >= body.offsetHeight) {
+			this.getItems()
+		}
+	},
+	addItemToTop: function(newItem){
 		var updated = this.state.items;
 		updated.unshift(newItem)
 		this.setState({items: updated});
-		console.log(this.state.items)
+	},
+	getItems: function(){
+		self = this
+		appbaseRef.search({
+			type: "feed",
+		  	size: 10,
+		  	from: self.props.pageNumber*10,
+			body: {
+			    query: {
+			      match_all: {}
+			    },
+			    sort: {
+			    	timestamp: "desc"
+			    }
+			  }
+			}).on('data', function(res) {
+				console.log(self.props.pageNumber)
+				self.props.pageNumber = self.props.pageNumber + 1
+				self.addItemsToFeed(res.hits.hits)
+			}).on('error', function(err) {
+			  console.log("search error: ", err);
+		})
+	},
+	addItemsToFeed: function(newItems){
+		var updated = this.state.items;
+		$.map(newItems, function(object){
+			updated.push(object._source)
+		})
+		this.setState({items: updated});
 	},
 	render: function() {
 		return (
